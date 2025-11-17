@@ -4,7 +4,6 @@ from fastapi.responses import RedirectResponse
 
 from contextlib import asynccontextmanager
 from app.db.mongodb import connect_to_mongo, close_mongo_connection
-from app.api.v1.routes import paciente
 # Importa el enrutador principal que agrupa todos los endpoints de la v1
 from app.api.v1.api import api_router_v1
 # Importa la configuración centralizada

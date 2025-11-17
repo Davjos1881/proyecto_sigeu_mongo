@@ -70,6 +70,17 @@ async def actualizar_evento(evento_id: str, datos: EventoActualizar) -> Evento:
     return Evento(id=str(ev.id), **datos_final)
 
 
+async def eliminar_evento(evento_id: str) -> None:
+    try:
+        object_id = PydanticObjectId(evento_id)
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de evento invalido")
+    ev = await EventoModel.get(object_id)
+    if not ev:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Evento {evento_id} no encontrado")
+    await ev.delete()
+
+
 
 async def agregar_revision(evento_id: str, revision: Dict[str, Any]) -> Evento:
     try:

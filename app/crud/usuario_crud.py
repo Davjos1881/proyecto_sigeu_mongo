@@ -30,13 +30,7 @@ async def obtener_usuario_por_id(usuario_id: str) -> Usuario:
         )
 
     data = user.model_dump()
-    data.pop("id", None)  # ID lo pasamos manualmente
-
-    # ---------------------------------------------------------
-    # 🔧 CORRECCIÓN DE ObjectId ANIDADOS QUE ROMPEN PYDANTIC
-    # ---------------------------------------------------------
-
-    # Convertir perfil.estudiante.programa_id → str
+    data.pop("id", None) 
     if "perfil" in data and isinstance(data["perfil"], dict):
         perfil = data["perfil"]
 
@@ -46,7 +40,6 @@ async def obtener_usuario_por_id(usuario_id: str) -> Usuario:
             if "programa_id" in est and isinstance(est["programa_id"], ObjectId):
                 est["programa_id"] = str(est["programa_id"])
 
-    # Convertir notificaciones → lista de dicts
     if "notificaciones" in data and isinstance(data["notificaciones"], list):
         for notif in data["notificaciones"]:
             if isinstance(notif.get("id_notificacion"), ObjectId):
@@ -55,7 +48,6 @@ async def obtener_usuario_por_id(usuario_id: str) -> Usuario:
             if isinstance(notif.get("evento_id"), ObjectId):
                 notif["evento_id"] = str(notif["evento_id"])
 
-    # ---------------------------------------------------------
 
     return Usuario(id=str(user.id), **data)
 
@@ -67,12 +59,8 @@ async def listar_usuarios():
     for u in usuarios:
         data = u.model_dump()
         
-        # Convertir ID principal
         data["id"] = str(u.id)
 
-        # -------------------------
-        #   NORMALIZAR PERFILES
-        # -------------------------
         if data.get("perfil"):
 
             est = data["perfil"].get("estudiante")
@@ -83,9 +71,6 @@ async def listar_usuarios():
             if doc and doc.get("unidad_id"):
                 doc["unidad_id"] = str(doc["unidad_id"])
 
-        # -------------------------
-        #   NORMALIZAR NOTIFICACIONES
-        # -------------------------
         notificaciones = data.get("notificaciones", [])
         for n in notificaciones:
             if n.get("id_notificacion"):

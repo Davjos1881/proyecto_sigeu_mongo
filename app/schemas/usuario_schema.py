@@ -2,11 +2,6 @@ from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, List
 from datetime import datetime
 
-
-# -------------------------
-#   SUBMODELOS
-# -------------------------
-
 class Estudiante(BaseModel):
     programa_id: Optional[str] = None
     nombre_programa: Optional[str] = None
@@ -36,17 +31,13 @@ class Notificacion(BaseModel):
     fecha: Optional[datetime] = None
 
 
-# -------------------------
-#   SCHEMAS DE CRUD
-# -------------------------
-
 class UsuarioCrear(BaseModel):
     nombre: str
     correo: EmailStr
     telefono: Optional[str] = None
     rol_usuario: str
 
-    perfil: Optional[Perfil] = None  # ← aquí van estudiante/docente
+    perfil: Optional[Perfil] = None  
     
 
 
@@ -56,13 +47,8 @@ class UsuarioActualizar(BaseModel):
     telefono: Optional[str] = None
     rol_usuario: Optional[str] = None
 
-    perfil: Optional[Perfil] = None  # ← igual que en UsuarioCrear
-    
+    perfil: Optional[Perfil] = None  
 
-
-# -------------------------
-#   SCHEMA DE RESPUESTA
-# -------------------------
 
 class Usuario(BaseModel):
     id: str = Field(..., description="ID del usuario")

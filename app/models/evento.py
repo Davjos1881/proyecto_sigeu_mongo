@@ -37,7 +37,7 @@ class Responsable(BaseModel):
 
 class Certificado(BaseModel):
     id_certificado: Optional[Union[PydanticObjectId, str]] = None
-    organizador_id: Optional[Union[PydanticObjectId, str]] = None
+    organizacion_id: Optional[Union[PydanticObjectId, str]] = None
     representante: Optional[str] = None
     fecha_emision: Optional[datetime] = None
 

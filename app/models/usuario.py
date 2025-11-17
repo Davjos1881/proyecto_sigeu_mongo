@@ -3,10 +3,6 @@ from pydantic import BaseModel, EmailStr
 from typing import List, Optional, Any
 from datetime import datetime
 
-# -------------------
-#   SUBMODELOS
-# -------------------
-
 class Estudiante(BaseModel):
     programa_id: Optional[Any] = None
     nombre_programa: Optional[str] = None
@@ -36,9 +32,6 @@ class Notificacion(BaseModel):
     fecha: Optional[datetime] = None
 
 
-# -------------------
-#   DOCUMENTO BEANIE
-# -------------------
 
 class UsuarioModel(Document):
     nombre: str
@@ -46,10 +39,8 @@ class UsuarioModel(Document):
     telefono: Optional[str] = None
     rol_usuario: str
 
-    # PERFIL → nunca null, siempre objeto
     perfil: Perfil = Perfil()
 
-    # LISTAS → nunca null, siempre []
     contrasenas: List[Contrasena] = []
     notificaciones: List[Notificacion] = []
 
