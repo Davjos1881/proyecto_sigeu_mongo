@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from beanie import PydanticObjectId
 from typing import List, Optional
 from app.models.unidad import UnidadAcademicaModel
-from app.schemas.unidad import UnidadCrear, Unidad, UnidadActualizar
+from app.schemas.unidad_schema import UnidadCrear, Unidad, UnidadActualizar
 
 async def crear_unidad(nuevo: UnidadCrear) -> Unidad:
     u = UnidadAcademicaModel(**nuevo.model_dump())

@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from beanie import PydanticObjectId
 from typing import List
 from app.models.facultad import FacultadModel
-from app.schemas.facultad import FacultadCrear, Facultad, FacultadActualizar
+from app.schemas.facultad_schema import FacultadCrear, Facultad, FacultadActualizar
 
 async def crear_facultad(nuevo: FacultadCrear) -> Facultad:
     f = FacultadModel(**nuevo.model_dump())

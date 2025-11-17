@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from beanie import PydanticObjectId
 from typing import List, Optional
 from app.models.programa import ProgramaModel
-from app.schemas.programa import ProgramaCrear, Programa, ProgramaActualizar
+from app.schemas.programa_schema import ProgramaCrear, Programa, ProgramaActualizar
 
 async def crear_programa(nuevo: ProgramaCrear) -> Programa:
     p = ProgramaModel(**nuevo.model_dump())

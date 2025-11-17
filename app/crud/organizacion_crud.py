@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from beanie import PydanticObjectId
 from typing import List, Optional
 from app.models.organizacion import OrganizacionExternaModel
-from app.schemas.organizacion import OrganizacionCrear, Organizacion, OrganizacionActualizar
+from app.schemas.organizacion_schema import OrganizacionCrear, Organizacion, OrganizacionActualizar
 
 async def crear_organizacion(nuevo: OrganizacionCrear) -> Organizacion:
     org = OrganizacionExternaModel(**nuevo.model_dump())
@@ -40,44 +40,44 @@ async def listar_organizaciones(q: Optional[str] = None) -> List[Organizacion]:
         for org in items
     ]
 
-async def actualizar_unidad(unidad_id: str, datos: UnidadActualizar) -> Unidad:
+async def actualizar_organizacion(org_id: str, datos: OrganizacionActualizar) -> Organizacion:
     try:
-        oid = PydanticObjectId(unidad_id)
+        object_id = PydanticObjectId(org_id)
     except Exception:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="id de unidad inválido"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="id de organización inválido")
 
-    u = await UnidadAcademicaModel.get(oid)
-    if not u:
+    org = await OrganizacionExternaModel.get(object_id)
+    if not org:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Unidad {unidad_id} no encontrada"
+            detail=f"Organización {org_id} no encontrada"
         )
 
-    # Actualización campo por campo – estilo Paciente
-    u.nombre_unidad = datos.nombre_unidad or u.nombre_unidad
-    u.facultad = datos.facultad or u.facultad
-    u.programas_academicos = datos.programas_academicos or u.programas_academicos
-    u.estado = datos.estado or u.estado
+    org.nombre_organizacion = datos.nombre_organizacion or org.nombre_organizacion
+    org.representante_legal = datos.representante_legal or org.representante_legal
+    org.telefono = datos.telefono or org.telefono
+    org.direccion = datos.direccion or org.direccion
+    org.actividad = datos.actividad or org.actividad
+    org.sector_economico = datos.sector_economico or org.sector_economico
 
-    await u.save()
+    await org.save()
 
-    return Unidad(
-        id=str(u.id),
-        nombre_unidad=u.nombre_unidad,
-        facultad=u.facultad,
-        programas_academicos=u.programas_academicos,
-        estado=u.estado
+    return Organizacion(
+        id=str(org.id),
+        nombre_organizacion=org.nombre_organizacion,
+        representante_legal=org.representante_legal,
+        telefono=org.telefono,
+        direccion=org.direccion,
+        actividad=org.actividad,
+        sector_economico=org.sector_economico,
     )
 
 async def eliminar_organizacion(org_id: str) -> None:
     try:
-        oid = PydanticObjectId(org_id)
+        object_id = PydanticObjectId(org_id)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de organización inválido")
-    org = await OrganizacionExternaModel.get(oid)
+    org = await OrganizacionExternaModel.get(object_id)
     if not org:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Organización {org_id} no encontrada")
     await org.delete()

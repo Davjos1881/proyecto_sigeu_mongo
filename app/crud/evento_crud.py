@@ -1,6 +1,6 @@
 from fastapi import HTTPException,status
 from app.models.evento import EventoModel
-from app.schemas.evento import EventoCrear, Evento, EventoActualizar
+from app.schemas.evento_schema import EventoCrear, Evento, EventoActualizar
 from beanie import PydanticObjectId
 from typing import List, Dict, Any
 

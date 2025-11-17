@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from beanie import PydanticObjectId
 from typing import List, Optional
 from app.models.instalacion import InstalacionModel
-from app.schemas.instalacion import InstalacionCrear, Instalacion, InstalacionActualizar
+from app.schemas.instalacion_schema import InstalacionCrear, Instalacion, InstalacionActualizar
 
 async def crear_instalacion(nuevo: InstalacionCrear) -> Instalacion:
     i = InstalacionModel(**nuevo.model_dump())
