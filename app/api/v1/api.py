@@ -1,16 +1,17 @@
 from fastapi import APIRouter
 
-# Importa el enrutador específico del módulo de pacientes
-from app.api.v1.routes import paciente
+from app.api.v1.routes import paciente, programas_router, usuarios_router, facultades_router, evento_router, instalaciones_router, unidades_router, organizaciones_router
 
 # Crea un enrutador principal para la v1
 api_router_v1 = APIRouter()
 
-# Incluye el enrutador de pacientes bajo el prefijo /pacientes
-# Todas las rutas en paciente.router ahora comenzarán con /pacientes
-# y estarán agrupadas bajo la etiqueta "Pacientes" en la documentación.
 api_router_v1.include_router(paciente.router, prefix="/pacientes", tags=["Pacientes"])
 
-# Si en el futuro tienes un enrutador para "Doctores", lo agregarías aquí:
-# from app.api.v1.routes import doctor
-# api_router_v1.include_router(doctor.router, prefix="/doctores", tags=["Doctores"])
+api_router_v1.include_router(usuarios_router.router, prefix="/usuarios")
+api_router_v1.include_router(programas_router.router, prefix="/programas")
+api_router_v1.include_router(facultades_router.router, prefix="/facultades")
+api_router_v1.include_router(evento_router.router, prefix="/eventos")
+api_router_v1.include_router(instalaciones_router.router, prefix="/instalaciones")
+api_router_v1.include_router(unidades_router.router, prefix="/unidades")
+api_router_v1.include_router(organizaciones_router.router, prefix="/organizaciones")
+

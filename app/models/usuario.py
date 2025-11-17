@@ -1,44 +1,57 @@
-from beanie import Document, PydanticObjectId
+from beanie import Document
 from pydantic import BaseModel, EmailStr
-from typing import List, Optional
+from typing import List, Optional, Any
 from datetime import datetime
 
+# -------------------
+#   SUBMODELOS
+# -------------------
 
 class Estudiante(BaseModel):
-    programa_id: Optional[str] = None
+    programa_id: Optional[Any] = None
     nombre_programa: Optional[str] = None
 
 
 class Docente(BaseModel):
-    unidad_id: Optional[str] = None
+    unidad_id: Optional[Any] = None
     nombre_unidad: Optional[str] = None
 
 
+class Perfil(BaseModel):
+    estudiante: Optional[Estudiante] = None
+    docente: Optional[Docente] = None
+
+
 class Contrasena(BaseModel):
-    id_contrasena: Optional[str] = None
+    id_contrasena: Optional[int] = None
     fecha_creacion: datetime
     fecha_ultimo_cambio: datetime
     vigente: bool
 
 
 class Notificacion(BaseModel):
-    id_notificacion: Optional[str] = None
-    evento_id: Optional[str] = None
+    id_notificacion: Optional[Any] = None
+    evento_id: Optional[Any] = None
     mensaje: Optional[str] = None
-    fecha: datetime
+    fecha: Optional[datetime] = None
 
+
+# -------------------
+#   DOCUMENTO BEANIE
+# -------------------
 
 class UsuarioModel(Document):
-    id: Optional[PydanticObjectId] = None
     nombre: str
     correo: EmailStr
     telefono: Optional[str] = None
     rol_usuario: str
-    perfil: Optional[str] = None
-    estudiante: Optional[Estudiante] = None
-    docente: Optional[Docente] = None
-    contrasenas: Optional[List[Contrasena]] = []
-    notificaciones: Optional[List[Notificacion]] = []
+
+    # PERFIL → nunca null, siempre objeto
+    perfil: Perfil = Perfil()
+
+    # LISTAS → nunca null, siempre []
+    contrasenas: List[Contrasena] = []
+    notificaciones: List[Notificacion] = []
 
     class Settings:
         name = "usuarios"

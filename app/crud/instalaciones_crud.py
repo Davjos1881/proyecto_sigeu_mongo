@@ -14,24 +14,32 @@ async def obtener_instalacion_por_id(inst_id: str) -> Instalacion:
         object_id = PydanticObjectId(inst_id)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de instalación inválido")
+    
     i = await InstalacionModel.get(object_id)
     if not i:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Instalación {inst_id} no encontrada")
-    return Instalacion(id=str(i.id), **i.model_dump())
+    
+    return Instalacion(id=str(i.id), **i.model_dump(exclude={"id"}))
 
 async def listar_instalaciones() -> List[Instalacion]:
     items = await InstalacionModel.find_all().to_list()
-    return [Instalacion(id=str(x.id), **x.model_dump()) for x in items]
+    return [
+        Instalacion(
+            id=str(x.id),
+            **x.model_dump(exclude={"id"})
+        )
+        for x in items
+    ]
 
 async def actualizar_instalacion(inst_id: str, datos: InstalacionActualizar) -> Instalacion:
     try:
         object_id = PydanticObjectId(inst_id)
     except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="id de instalación inválido")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de instalación inválido")
 
     i = await InstalacionModel.get(object_id)
     if not i:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Instalación {inst_id} no encontrada")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Instalación {inst_id} no encontrada")
 
     i.nombre_instalacion = datos.nombre_instalacion or i.nombre_instalacion
     i.tipo_instalacion = datos.tipo_instalacion or i.tipo_instalacion
@@ -41,9 +49,7 @@ async def actualizar_instalacion(inst_id: str, datos: InstalacionActualizar) -> 
 
     return Instalacion(
         id=str(i.id),
-        nombre_instalacion=i.nombre_instalacion,
-        tipo_instalacion=i.tipo_instalacion,
-        ubicacion=i.ubicacion,
+        **i.model_dump(exclude={"id"})
     )
 
 async def eliminar_instalacion(inst_id: str) -> None:
@@ -51,8 +57,10 @@ async def eliminar_instalacion(inst_id: str) -> None:
         oid = PydanticObjectId(inst_id)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de instalación inválido")
+    
     i = await InstalacionModel.get(oid)
     if not i:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Instalación {inst_id} no encontrada")
+    
     await i.delete()
     return None

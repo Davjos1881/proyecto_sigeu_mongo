@@ -1,22 +1,23 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Any
+from typing import Optional, List, Union
 from datetime import datetime
+from beanie import PydanticObjectId
 
 
 class OrganizacionRef(BaseModel):
-    id_organizacion: Optional[Any] = None
+    id_organizacion: Optional[Union[PydanticObjectId, str]] = None
     nombre_organizacion: Optional[str] = None
 
 
 class InstalacionRef(BaseModel):
-    id_instalacion: Optional[Any] = None
+    id_instalacion: Optional[Union[PydanticObjectId, str]] = None
     nombre_instalacion: Optional[str] = None
     ubicacion: Optional[str] = None
     tipo_instalacion: Optional[str] = None
 
 
 class Revision(BaseModel):
-    id_revision: Optional[Any] = None
+    id_revision: Optional[Union[PydanticObjectId, str]] = None
     estado: Optional[str] = None
     fecha_revision: Optional[datetime] = None
     justificacion: Optional[str] = None
@@ -24,20 +25,20 @@ class Revision(BaseModel):
 
 
 class Aval(BaseModel):
-    id_aval: Optional[Any] = None
+    id_aval: Optional[Union[PydanticObjectId, str]] = None
     fecha_emision: Optional[datetime] = None
     emitido_por: Optional[str] = None
     rol_responsable: Optional[str] = None
 
 
 class Responsable(BaseModel):
-    usuario_id: Optional[Any] = None
+    usuario_id: Optional[Union[PydanticObjectId, str]] = None
     nombre_responsable: Optional[str] = None
 
 
 class CertificadoParticipacion(BaseModel):
-    id_certificado: Optional[Any] = None
-    organizacion_id: Optional[Any] = None
+    id_certificado: Optional[Union[PydanticObjectId, str]] = None
+    organizacion_id: Optional[Union[PydanticObjectId, str]] = None
     representante: Optional[str] = None
     fecha_emision: Optional[datetime] = None
 
@@ -49,7 +50,7 @@ class EventoCrear(BaseModel):
     publicado: Optional[bool] = False
     organizacion: Optional[OrganizacionRef] = None
     instalacion: Optional[InstalacionRef] = None
-    unidad: Optional[Any] = None
+    unidad: Optional[Union[PydanticObjectId, str]] = None
 
 
 class EventoActualizar(BaseModel):
@@ -59,7 +60,7 @@ class EventoActualizar(BaseModel):
     publicado: Optional[bool] = None
     organizacion: Optional[OrganizacionRef] = None
     instalacion: Optional[InstalacionRef] = None
-    unidad: Optional[Any] = None
+    unidad: Optional[Union[PydanticObjectId, str]] = None
 
 
 class Evento(EventoCrear):

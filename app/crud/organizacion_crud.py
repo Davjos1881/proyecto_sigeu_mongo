@@ -7,17 +7,23 @@ from app.schemas.organizacion_schema import OrganizacionCrear, Organizacion, Org
 async def crear_organizacion(nuevo: OrganizacionCrear) -> Organizacion:
     org = OrganizacionExternaModel(**nuevo.model_dump())
     await org.insert()
-    return Organizacion(id=str(org.id), **nuevo.model_dump())
+    data = nuevo.model_dump()
+    data.pop("id", None)  # evitar conflicto con id
+    return Organizacion(id=str(org.id), **data)
 
 async def obtener_organizacion_por_id(org_id: str) -> Organizacion:
     try:
         object_id = PydanticObjectId(org_id)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de organización inválido")
+    
     org = await OrganizacionExternaModel.get(object_id)
     if not org:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Organización {org_id} no encontrada")
-    return Organizacion(id=str(org.id), **org.model_dump())
+    
+    data = org.model_dump()
+    data.pop("id", None)  # evitar conflicto con id
+    return Organizacion(id=str(org.id), **data)
 
 async def listar_organizaciones(q: Optional[str] = None) -> List[Organizacion]:
     if q:
@@ -44,14 +50,11 @@ async def actualizar_organizacion(org_id: str, datos: OrganizacionActualizar) ->
     try:
         object_id = PydanticObjectId(org_id)
     except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="id de organización inválido")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de organización inválido")
 
     org = await OrganizacionExternaModel.get(object_id)
     if not org:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Organización {org_id} no encontrada"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Organización {org_id} no encontrada")
 
     org.nombre_organizacion = datos.nombre_organizacion or org.nombre_organizacion
     org.representante_legal = datos.representante_legal or org.representante_legal
@@ -62,23 +65,19 @@ async def actualizar_organizacion(org_id: str, datos: OrganizacionActualizar) ->
 
     await org.save()
 
-    return Organizacion(
-        id=str(org.id),
-        nombre_organizacion=org.nombre_organizacion,
-        representante_legal=org.representante_legal,
-        telefono=org.telefono,
-        direccion=org.direccion,
-        actividad=org.actividad,
-        sector_economico=org.sector_economico,
-    )
+    data = org.model_dump()
+    data.pop("id", None)  # evitar conflicto con id
+    return Organizacion(id=str(org.id), **data)
 
 async def eliminar_organizacion(org_id: str) -> None:
     try:
         object_id = PydanticObjectId(org_id)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id de organización inválido")
+    
     org = await OrganizacionExternaModel.get(object_id)
     if not org:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Organización {org_id} no encontrada")
+    
     await org.delete()
     return None

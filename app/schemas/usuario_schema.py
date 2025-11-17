@@ -1,40 +1,53 @@
 from pydantic import BaseModel, Field, EmailStr
-from typing import Optional, List, Any
+from typing import Optional, List
 from datetime import datetime
 
 
+# -------------------------
+#   SUBMODELOS
+# -------------------------
+
 class Estudiante(BaseModel):
-    programa_id: Optional[Any] = None
+    programa_id: Optional[str] = None
     nombre_programa: Optional[str] = None
 
 
 class Docente(BaseModel):
-    unidad_id: Optional[Any] = None
+    unidad_id: Optional[str] = None
     nombre_unidad: Optional[str] = None
 
 
+class Perfil(BaseModel):
+    estudiante: Optional[Estudiante] = None
+    docente: Optional[Docente] = None
+
+
 class Contrasena(BaseModel):
-    id_contrasena: Optional[Any] = None
-    fecha_creacion: Optional[datetime] = None
-    fecha_ultimo_cambio: Optional[datetime] = None
-    vigente: Optional[bool] = True
+    id_contrasena: Optional[int] = None
+    fecha_creacion: datetime
+    fecha_ultimo_cambio: datetime
+    vigente: bool
 
 
 class Notificacion(BaseModel):
-    id_notificacion: Optional[Any] = None
-    evento_id: Optional[Any] = None
+    id_notificacion: Optional[str] = None
+    evento_id: Optional[str] = None
     mensaje: Optional[str] = None
     fecha: Optional[datetime] = None
 
+
+# -------------------------
+#   SCHEMAS DE CRUD
+# -------------------------
 
 class UsuarioCrear(BaseModel):
     nombre: str
     correo: EmailStr
     telefono: Optional[str] = None
     rol_usuario: str
-    perfil: Optional[str] = None
-    estudiante: Optional[Estudiante] = None
-    docente: Optional[Docente] = None
+
+    perfil: Optional[Perfil] = None  # ← aquí van estudiante/docente
+    
 
 
 class UsuarioActualizar(BaseModel):
@@ -42,12 +55,24 @@ class UsuarioActualizar(BaseModel):
     correo: Optional[EmailStr] = None
     telefono: Optional[str] = None
     rol_usuario: Optional[str] = None
-    perfil: Optional[str] = None
-    estudiante: Optional[Estudiante] = None
-    docente: Optional[Docente] = None
+
+    perfil: Optional[Perfil] = None  # ← igual que en UsuarioCrear
+    
 
 
-class Usuario(UsuarioCrear):
+# -------------------------
+#   SCHEMA DE RESPUESTA
+# -------------------------
+
+class Usuario(BaseModel):
     id: str = Field(..., description="ID del usuario")
-    contrasenas: Optional[List[Contrasena]] = []
-    notificaciones: Optional[List[Notificacion]] = []
+
+    nombre: str
+    correo: EmailStr
+    telefono: Optional[str] = None
+    rol_usuario: str
+
+    perfil: Optional[Perfil] = None
+
+    contrasenas: List[Contrasena] = Field(default_factory=list)
+    notificaciones: List[Notificacion] = Field(default_factory=list)
