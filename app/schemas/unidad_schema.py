@@ -1,9 +1,10 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Union
+from beanie import PydanticObjectId
 
 
 class FacultadRef(BaseModel):
-    id_facultad: Optional[str] = None
+    id_facultad: Optional[Union[str, PydanticObjectId]] = None
     nombre_facultad: Optional[str] = None
 
 
@@ -13,7 +14,9 @@ class UnidadCrear(BaseModel):
 
 
 class Unidad(BaseModel):
-    id: str = Field(..., description="ID de la unidad")
+    id: Optional[Union[str, PydanticObjectId]] = Field(
+        None, description="ID de la unidad"
+    )
     nombre_unidad: str
     facultad: Optional[FacultadRef] = None
 

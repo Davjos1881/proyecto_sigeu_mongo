@@ -13,5 +13,5 @@ api_router_v1.include_router(unidades_router.router, prefix="/unidades", tags=["
 api_router_v1.include_router(organizaciones_router.router, prefix="/organizaciones", tags=["Organizaciones"])
 api_router_v1.include_router(instalaciones_router.router, prefix="/instalaciones", tags=["Instalaciones"])
 api_router_v1.include_router(facultades_router.router, prefix="/facultades", tags=["Facultades"])
-api_router_v1.include_router(evento_router.router, prefix="/eventos", tags=["Eventos"])
+api_router_v1.include_router(evento_router.router)
 

@@ -15,8 +15,15 @@ def _convert_facultad(u):
 
 
 async def crear_unidad(nuevo: UnidadCrear) -> Unidad:
-    u = UnidadAcademicaModel(**nuevo.model_dump())
+    facultad_dict = nuevo.facultad.model_dump() if nuevo.facultad else None
+
+    u = UnidadAcademicaModel(
+        nombre_unidad=nuevo.nombre_unidad,
+        facultad=facultad_dict
+    )
+
     await u.insert()
+
     return Unidad(
         id=str(u.id),
         nombre_unidad=u.nombre_unidad,
